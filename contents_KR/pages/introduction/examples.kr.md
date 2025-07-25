@@ -1,292 +1,303 @@
-# 프롬프트 예시
+# 프롬프트 예시(Examples of Prompts)
 
-이전 절에서, 대규모언어모델(LLM)에 프롬프트를 입력하는 기본적인 예를 살펴보았습니다.
+이전 섹션에서는 LLM(대형 언어 모델)에 프롬프트를 입력하는 기본 예시를 소개했습니다.
 
-이번 절에서는 프롬프트를 사용하여 다양한 작업을 수행하는 예시를 통해 핵심 개념을 살펴보겠습니다. 종종, 개념을 배우는 가장 좋은 방법은 예시를 통해 이해하는 것입니다. 아래의 잘 작성된 프롬프트 예시를 통해 서로 다른 유형의 작업을 어떻게 수행할 수 있는지에 대해 알아보겠습니다.
+이 섹션에서는 다양한 작업을 달성하기 위해 프롬프트를 활용하는 더 많은 예시를 제공하고, 그 과정에서 주요 개념도 함께 소개합니다. 개념을 배우는 가장 좋은 방법 중 하나는 예시를 직접 따라가 보는 것입니다. 아래의 몇 가지 예시는 잘 설계된 프롬프트를 사용해 다양한 유형의 작업을 수행할 수 있음을 보여줍니다.
 
-Topics:
-- [문장 요약](#문장-요약)
-- [정보 추출](#정보-추출)
-- [질의응답](#질의응답)
-- [텍스트 분류](#텍스트-분류)
-- [대화](#대화)
-- [코드 생성](#코드-생성)
-- [추론](#추론)
+주요 주제:
+- [텍스트 요약](#text-summarization)
+- [정보 추출](#information-extraction)
+- [질문 답변](#question-answering)
+- [텍스트 분류](#text-classification)
+- [대화](#conversation)
+- [코드 생성](#code-generation)
+- [추론](#reasoning)
 
 ---
 
-## 문장 요약
-문장 요약은 자연어 생성의 대표적인 작업 중 하나입니다. 문장 요약은 여러 주제와 도메인을 포함합니다. 사실, 언어 모델의 가장 유망한 애플리케이션 중 하나는 기사와 개념을 빠르고 읽기 쉽게 요약할 수 있는 능력입니다. 프롬프트를 사용하여 간단한 요약 작업을 시도해 보겠습니다.
+<iframe width="100%"
+  height="415px"
+  src="https://www.youtube.com/embed/TBhRC4Dath4?si=6nwh0GuYAOv1H6yT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+  />
 
-예를 들어 항생제에 대해 배우고 싶다면 다음과 같은 프롬프트를 시도할 수 있습니다.
+<Callout type="info" emoji="🎓">
+프롬프팅 기법과 예시에 대해 더 배우고 싶다면 새로운 AI 과정을 확인하세요. [지금 참여하기!](https://dair-ai.thinkific.com/)
+추가 20% 할인 코드: PROMPTING20
+</Callout>
 
-*Prompt:*
+## 텍스트 요약(Text Summarization)
+자연어 생성(NLG)에서 표준적인 작업 중 하나는 텍스트 요약입니다. 텍스트 요약은 다양한 방식과 도메인에서 활용될 수 있습니다. 실제로, 언어 모델의 가장 유망한 응용 중 하나는 기사나 개념을 빠르고 읽기 쉬운 요약으로 만들어주는 능력입니다. 프롬프트를 활용한 기본 요약 작업을 시도해봅시다.
 
+예를 들어, 항생제(antibiotics)에 대해 배우고 싶다면 다음과 같이 프롬프트를 작성할 수 있습니다:
+
+*프롬프트:*
 ```
-항생제에 대해 설명해 줘
+Explain antibiotics
 
 A:
 ```
 
-*Output:*
-
+*출력:*
 ```
-항생제는 세균 감염을 치료하기 위해 사용되는 약물의 일종입니다. 세균을 죽이거나 번식을 방지하여 신체의 면역 체계가 감염에 대항할 수 있도록 합니다. 항생제는 보통 알약, 캡슐, 액체의 형태로 경구 복용하거나 때때로 정맥 주사로 투여되기도 합니다. 항생제는 바이러스 감염에는 효과적이지 않고, 남용할 경우 항생제 내성이 생길 수 있습니다.
-```
-
-"A:"는 질의응답에 사용되는 명시적 프롬프트 형식을 띠고 있습니다. 여러분은 모델에게 추가적으로 답변을 기대하고 있다는 것을 전달하기 위해서 이 방법을 사용했습니다. 이 예시가 얼마나 유용한가에 대해서는 추후에 다른 예시에서 살펴보도록 하겠습니다. 이제 이 출력이 우리가 원했던 것보다 더 많은 양의 정보라서 추가적인 요약이 필요하다고 가정해 보겠습니다. 실제로 모델에게 다음과 같이 한 문장으로 요약하도록 지시할 수 있습니다.
-
-*Prompt:*
-```
-항생제는 세균 감염을 치료하기 위해 사용되는 약물의 일종입니다. 세균을 죽이거나 번식을 방지하여 신체의 면역 체계가 감염에 대항할 수 있도록 합니다. 항생제는 보통 알약, 캡슐, 액체의 형태로 경구 복용하거나 때때로 정맥 주사로 투여되기도 합니다. 항생제는 바이러스 감염에는 효과적이지 않고, 남용할 경우 항생제 내성이 생길 수 있습니다.
-
-위 내용을 한 문장으로 요약해 줘:
+Antibiotics are a type of medication used to treat bacterial infections. They work by either killing the bacteria or preventing them from reproducing, allowing the body’s immune system to fight off the infection. Antibiotics are usually taken orally in the form of pills, capsules, or liquid solutions, or sometimes administered intravenously. They are not effective against viral infections, and using them inappropriately can lead to antibiotic resistance.
 ```
 
-*Output:*
+여기서 "A:"는 질문-답변(QA) 프롬프트 형식에서 답변이 뒤따름을 명시적으로 알리는 역할을 합니다. 이 예시에서는 그 유용성이 명확하지 않을 수 있지만, 이후 예시에서 더 자세히 다룹니다. 만약 정보가 너무 많다고 느껴진다면, 한 문장으로 요약하도록 모델에 지시할 수도 있습니다.
+
+*프롬프트:*
 ```
-항생제는 박테리아를 죽이거나 번식을 막음으로써 감염을 치료하는 데 사용되는 약이지만, 바이러스에 효과적이지 않고 과도한 사용은 항생제 내성을 초래할 수 있습니다.
+Antibiotics are a type of medication used to treat bacterial infections. They work by either killing the bacteria or preventing them from reproducing, allowing the body’s immune system to fight off the infection. Antibiotics are usually taken orally in the form of pills, capsules, or liquid solutions, or sometimes administered intravenously. They are not effective against viral infections, and using them inappropriately can lead to antibiotic resistance.
+
+Explain the above in one sentence:
 ```
 
-위 대답의 정확성은 추후 가이드에서 다룰 예정이므로 차치하고, 일단 모델이 단락을 한 문장으로 요약했다는 것에 초점을 맞춰 보겠습니다. 좀 더 정확한 지시를 내리는 방법에 대해서도 뒷장에서 살펴보기로 하고, 지금은 자유롭게 더 나은 결과를 얻을 수 있는지 실험해 보겠습니다.
+*출력:*
+```
+Antibiotics are medications used to treat bacterial infections by either killing the bacteria or stopping them from reproducing, but they are not effective against viruses and overuse can lead to antibiotic resistance.
+```
+
+정확성에 대한 평가는 이후 가이드에서 다루겠지만, 위 예시에서 모델은 단락을 한 문장으로 요약하려고 시도했습니다. 지시를 더 정교하게 할 수도 있지만, 이는 이후 장에서 다룹니다. 잠시 멈추고 직접 실험해보는 것도 좋습니다.
 
 ---
-## 정보 추출
-언어 모델은 자연어 생성과 관련된 작업을 수행하도록 훈련되었지만 분류나 다양한 자연어 처리(NLP) 작업을 수행할 수도 있습니다.
+## 정보 추출(Information Extraction)
+언어 모델은 자연어 생성 및 관련 작업을 위해 훈련되었지만, 분류(classification) 등 다양한 자연어 처리(NLP) 작업도 매우 잘 수행할 수 있습니다.
 
-주어진 단락에서 정보를 추출하는 프롬프트의 예시를 살펴보겠습니다.
+아래는 주어진 단락에서 정보를 추출하는 프롬프트 예시입니다.
 
-*Prompt:*
+*프롬프트:*
 ```
-연구 논문의 저자 기여도 진술서과 사사는 저자들이 원고 작성과 분석에 ChatGPT 등 AI 기술을 사용했는지 여부와 범위를 명확하고 구체적으로 명시해야 합니다. 또한 어떤 LLM이 사용되었는지 표기해야 합니다. 이를 통해 편집자와 심사자가 잠재적 편향, 부정확성 및 부적절한 출처 등의 문제를 고려해 원고를 보다 신중하게 검토하도록 유도할 수 있습니다. 마찬가지로, 과학 저널은 투고된 원고 선정 시 LLM 사용 여부를 투명하게 공개해야 합니다.
+Author-contribution statements and acknowledgements in research papers should state clearly and specifically whether, and to what extent, the authors used AI technologies such as ChatGPT in the preparation of their manuscript and analysis. They should also indicate which LLMs were used. This will alert editors and reviewers to scrutinize manuscripts more carefully for potential biases, inaccuracies and improper source crediting. Likewise, scientific journals should be transparent about their use of LLMs, for example when selecting submitted manuscripts.
 
-위 단락에서 언급한 대규모언어모델 기반 제품을 알려줘.
-```
-
-*Output:*
-```
-위 단락에서 언급한 대규모언어모델 기반 제품은 ChatGPT입니다.
+Mention the large language model based product mentioned in the paragraph above:
 ```
 
-위의 결과를 개선하는 방법은 여러 가지가 있겠지만, 이미 그 자체로도 꽤 유용합니다.
+*출력:*
+```
+The large language model based product mentioned in the paragraph above is ChatGPT.
+```
 
-이제 우리는 단순히 무엇을 할지 지시하는 것으로 모델이 다양한 작업을 수행하도록 할 수 있다는 사실을 배웠습니다. 이는 AI 제품 개발자들이 이미 강력한 제품이나 서비스를 구현하기 위해 사용하고 있는 강력한 능력입니다.
+더 나은 결과를 얻을 수 있는 다양한 방법이 있지만, 이미 매우 유용한 결과입니다.
 
-원본 출처: [ChatGPT: five priorities for research](https://www.nature.com/articles/d41586-023-00288-7)
+이제 모델에 단순히 무엇을 하라고 지시함으로써 다양한 작업을 수행할 수 있다는 것이 명확해졌을 것입니다. 이는 AI 제품 개발자들이 강력한 제품과 경험을 구축하는 데 이미 활용하고 있는 강력한 기능입니다.
+
+단락 출처: [ChatGPT: five priorities for research](https://www.nature.com/articles/d41586-023-00288-7)
 
 ---
-## 질의응답
+## 질문 답변(Question Answering)
+모델이 구체적인 답변을 하도록 하려면 프롬프트의 형식을 개선하는 것이 좋습니다. 앞서 다룬 것처럼, 프롬프트는 지침, 컨텍스트, 입력, 출력 표시자를 조합하여 더 나은 결과를 얻을 수 있습니다. 이러한 요소들이 필수는 아니지만, 지침이 구체적일수록 더 좋은 결과를 얻을 수 있습니다. 아래는 더 구조화된 프롬프트 예시입니다.
 
-모델로부터 원하는 답변을 끌어내는 가장 좋은 방법 중 하나는 프롬프트 형식을 개선하는 것입니다. 앞서 살펴본 바와 같이 프롬프트는 지시, 문맥, 입력 데이터와 출력 지시자를 조합하여 더 나은 결과를 얻을 수 있습니다. 이러한 요소는 필수적인 것은 아니지만, 지시가 구체적일수록 더 좋은 결과를 얻을 수 있습니다. 다음은 보다 구조화된 프롬프트를 실행해 보겠습니다.
-
-*Prompt:*
+*프롬프트:*
 ```
-아래 문맥을 고려해서 질문에 답변해 줘. 답변은 짧고 간결하게 해 줘. 답변이 정확하지 않다면, 「확실치 않은 대답」이라고 응답해 줘.
+Answer the question based on the context below. Keep the answer short and concise. Respond "Unsure about answer" if not sure about the answer.
 
-문맥: Teplizumab은 Ortho Pharmaceutical이라는 뉴저지의 제약 회사에서 유래했다. 그곳에서, 과학자들은 OKT3라는 항체의 초기 버전을 만들어 냈다. 원래 쥐에서 유래된 이 분자는 T 세포의 표면에 결합하여 세포를 죽이는 잠재력을 제한할 수 있다. 1986년, 신장 이식 후 장기 거부 반응 예방을 위해 승인되어 인간이 사용할 수 있는 최초의 치료용 항체가 되었다.
+Context: Teplizumab traces its roots to a New Jersey drug company called Ortho Pharmaceutical. There, scientists generated an early version of the antibody, dubbed OKT3. Originally sourced from mice, the molecule was able to bind to the surface of T cells and limit their cell-killing potential. In 1986, it was approved to help prevent organ rejection after kidney transplants, making it the first therapeutic antibody allowed for human use.
 
+Question: What was OKT3 originally sourced from?
 
-질문: OKT3는 어디서 유래했는가?
-
-답변:
+Answer:
 ```
 
-*Output:*
+*출력:*
 ```
-쥐.
+Mice.
 ```
 
-문맥의 출처는 [Nature](https://www.nature.com/articles/d41586-023-00400-x)입니다.
+컨텍스트 출처: [Nature](https://www.nature.com/articles/d41586-023-00400-x)
 
 ---
 
-## 텍스트 분류
-지금까지 우리는 간단한 지시를 사용하여 작업을 수행했습니다. 프롬프트 엔지니어로서 점점 더 나은 지시를 내리는 것은 기본 소양입니다. 하지만 그것이 전부는 아닙니다. 더 까다로운 작업을 수행하기 위해서는 지시만으로는 충분하지 않다는 것을 깨닫게 될 것입니다. 문맥과 여러 요소들을 고려하여 적절한 프롬프트를 사용할 필요가 있습니다. `입력 데이터`나 `예시` 또한 요소로 할 수 있습니다.
+## 텍스트 분류(Text Classification)
+지금까지는 간단한 지시만으로 작업을 수행했습니다. 프롬프트 엔지니어로서 더 나은 지시를 제공하는 능력을 키워야 합니다. 하지만 그것만으로는 충분하지 않은 어려운 사례도 있습니다. 이럴 때는 컨텍스트와 프롬프트에 사용할 수 있는 다양한 요소를 더 고민해야 합니다. 추가로 제공할 수 있는 요소로는 `입력 데이터`나 `예시`가 있습니다.
 
-텍스트 분류를 예시로 이를 설명해 보겠습니다.
+예시를 통해 텍스트 분류 작업을 시연해보겠습니다.
 
-*Prompt:*
+*프롬프트:*
 ```
-문장을 neutral, 부정 혹은 긍정으로 분류해 줘.
+Classify the text into neutral, negative or positive. 
 
-문구: 그 음식은 그럭저럭이었어.
-감정:
+Text: I think the food was okay. 
+Sentiment:
 ```
 
-*Output:*
+*출력:*
 ```
 Neutral
 ```
 
-모델에게 텍스트 분류를 지시하자 모델은 `'Neutral'`이라는 올바른 답변을 반환했습니다. 오답은 아니지만, 모델이 우리가 원하는 특정 형식의 라벨을 반환하길 원한다고 가정해 보겠습니다. `Neutral` 대신 `neutral`을 반환하도록 유도해 봅시다. 그러기 위해서는 어떻게 해야 할까요? 방법은 여러 가지가 있습니다. 지금 이 예시에서는 정확성에 초점을 맞추고 있고, 프롬프트에 더 많은 정보를 제공할수록 더 나은 결과를 얻을 수 있습니다. 원하는 결과를 얻기 위해 예시들을 추가하여 다시 시도해 보겠습니다.
+텍스트를 분류하라는 지시를 주었고, 모델은 'Neutral'이라고 응답했습니다. 맞는 답이지만, 만약 정확히 'neutral'이라는 소문자 레이블을 원한다면 어떻게 해야 할까요? 다양한 방법이 있지만, 여기서는 예시를 추가하여 원하는 동작을 명확히 지정할 수 있습니다. 다시 시도해봅시다:
 
-*Prompt:*
+*프롬프트:*
 ```
-문장을 neutral, 부정 혹은 긍정으로 분류해 줘.
+Classify the text into neutral, negative or positive. 
 
-문구: 이번 휴가는 그럭저럭이었어.
-감정: neutral
+Text: I think the vacation is okay.
+Sentiment: neutral 
 
-문구: 그 음식은 그럭저럭이었어.
-감정:
+Text: I think the food was okay. 
+Sentiment:
 ```
 
-*Output:*
+*출력:*
 ```
 neutral
 ```
 
-우와! 의도한 대로 모델은 소문자로 시작하는 `neutral`을 반환했습니다. 프롬프트에 예시를 제공함으로써 모델로부터 원하는 답변을 끌어낼 수 있었습니다.
+이번에는 모델이 원하는 대로 'neutral'을 반환했습니다. 예시를 추가하니 출력이 더 구체적으로 맞춰졌음을 알 수 있습니다.
 
-구체적으로 질문하는 것이 중요하다는 것을 다음 예시를 통해서 살펴보겠습니다:
+구체성이 왜 중요한지 강조하기 위해 아래 예시를 살펴보세요:
 
-*Prompt:*
+*프롬프트:*
 ```
-문장을 nutral, 부정 혹은 긍정으로 분류해 줘.
+Classify the text into nutral, negative or positive. 
 
-문구: 이번 휴가는 그럭저럭이었어.
-감정:
+Text: I think the vacation is okay.
+Sentiment:
 ```
 
-*Output:*
+*출력:*
 ```
 Neutral
 ```
 
-어떤 점이 문제일까요? 프롬프트에 입력된 `nutral` 라벨은 모델에게 완전히 무시됐습니다. 대신, 모델은 `Neutral`을 출력했으며 이는 해당 라벨에 대한 편향이 있기 때문입니다. 그러나 우리가 실제로 원하는 것은 `nutral`이라고 가정해 보겠습니다. 이 문제를 해결하려면 어떻게 해야 할까요? 라벨에 설명을 추가하거나 프롬프트에 더 많은 예제를 추가해 보는 것은 어떨까요? 확신이 들지 않는다면, 다음 절에서 몇 가지 생각을 논의해 보겠습니다.
+여기서 문제는 무엇일까요? 힌트: 'nutral'이라는 잘못된 레이블은 모델이 완전히 무시하고, 대신 'Neutral'을 출력합니다. 모델이 해당 레이블에 편향되어 있기 때문입니다. 만약 정말로 'nutral'을 원한다면 어떻게 해야 할까요? 레이블에 대한 설명을 추가하거나 더 많은 예시를 추가해볼 수 있습니다. 자세한 아이디어는 다음 섹션에서 다룹니다.
 
 ---
 
-## 대화
-아마 프롬프트 엔지니어링을 통해 접할 수 있는 흥미로운 점들 중 하나는 LLM 시스템의 행동과 의도 그리고 정체성을 고려하여 지시를 내리는 것일 겁니다. 이러한 특성은 고객 서비스 챗봇과 같은 대화형 시스템을 구축할 때 특히 유용합니다.
+## 대화(Conversation)
+프롬프트 엔지니어링으로 달성할 수 있는 더 흥미로운 것 중 하나는 LLM 시스템의 행동, 의도, 정체성을 지시하는 것입니다. 이는 고객 서비스 챗봇과 같은 대화형 시스템을 구축할 때 특히 유용합니다.
 
-예를 들어 주어진 질문에 기술적이고 과학적인 대답을 반환할 수 있는 대화형 시스템을 구축해 보겠습니다. *역할 프롬프팅*이라 불리는 것입니다.
+예를 들어, 질문에 대해 더 기술적이고 과학적인 답변을 생성하는 대화형 시스템을 만들어봅시다. 지시를 통해 어떻게 행동해야 하는지 명확히 전달하는 점에 주목하세요. 이를 *역할 프롬프팅(role prompting)*이라고도 합니다.
 
-*Prompt:*
+*프롬프트:*
 ```
-다음은 AI 연구 보조원과의 대화입니다. 이 보조원의 어조는 기술적이고 과학적입니다.
+The following is a conversation with an AI research assistant. The assistant tone is technical and scientific.
 
-인간: 안녕, 너는 누구니?
-AI: 반갑습니다! 저는 AI 연구 보조원입니다. 오늘은 무엇을 도와드릴까요?
-인간: 블랙홀 생성에 대해 설명해 줄래?
+Human: Hello, who are you?
+AI: Greeting! I am an AI research assistant. How can I help you today?
+Human: Can you tell me about the creation of blackholes?
 AI:
 ```
 
-*Output:*
+*출력:*
 ```
-물론입니다! 블랙홀은 중력이 너무 강해서 심지어 빛조차도 벗어날 수 없는 시공간의 영역입니다. 아주 거대한 별이 죽고 그 중심핵이 스스로 붕괴하여 무한한 밀도의 특이점을 형성할 때 생성됩니다. 특이점의 강한 중력은 그 주변의 모든 물질과 방사선을 끌어당겨 블랙홀을 만듭니다.
-```
-
-우리 AI 연구 보조원의 대답은 너무 기술적인 것 같습니다. 이 행동을 변경하여 시스템에 보다 접근하기 쉬운 답변을 지시해 보겠습니다.
-
-*Prompt:*
-```
-다음은 AI 연구 보조원과의 대화입니다. 보조원은 초등학생도 이해할 수 있는 수준으로 답변해야 합니다.
-
-인간: 안녕, 너는 누구니?
-AI: 반갑습니다! 저는 AI 연구 보조원입니다. 오늘은 무엇을 도와드릴까요?
-인간: 블랙홀 생성에 대해 설명해줄래?
-AI:
+Sure! Black holes are regions of spacetime where the gravitational force is so strong that nothing, not even light, can escape from it. They are created when a very massive star dies and its core collapses in on itself, forming a singularity of infinite density. The intense gravity of the singularity pulls in all the matter and radiation around it, creating the black hole.
 ```
 
-*Output:*
+AI 리서치 어시스턴트가 너무 기술적으로 들리나요? 이번에는 더 쉽게 이해할 수 있도록 시스템에 지시해봅시다.
+
+*프롬프트:*
 ```
-물론이죠! 블랙홀은 아주 거대한 별이 연료를 다 써 버려서 스스로 붕괴함으로써 만들어집니다. 별의 중력이 매우 강하기 때문에 빛조차도 벗어날 수 없습니다. 이렇게 강력한 중력을 가진 시공간의 한 점이 블랙홀입니다.
+The following is a conversation with an AI research assistant. The assistant answers should be easy to understand even by primary school students.
+
+Human: Hello, who are you?
+AI: Greeting! I am an AI research assistant. How can I help you today?
+Human: Can you tell me about the creation of black holes?
+AI: 
 ```
 
-우리는 결과를 개선했습니다. 여기서 더 개선할 수도 있습니다. 더 많은 예시를 추가한다면 더 나은 결과를 얻을 수도 있습니다.
+*출력:*
+```
+Sure! Black holes are created when a very massive star runs out of fuel and collapses in on itself. The gravity of the star is so strong that nothing, not even light, can escape its pull. This creates a point in space-time with an intense gravitational force called a black hole.
+```
+
+진전이 있었습니다. 더 많은 예시를 추가하면 결과가 더 좋아질 수 있습니다.
 
 ---
 
-## 코드 생성
-LLM은 매우 효과적인 코드 생성 애플리케이션 중 하나입니다. 코파일럿(Copilot)이 대표적인 예시입니다. 프롬프트를 영리하게 사용해서 코드를 생성하는 다양한 작업들이 있습니다. 아래에서 몇 가지 예시를 살펴보겠습니다.
+## 코드 생성(Code Generation)
+LLM이 매우 효과적으로 활용되는 분야 중 하나는 코드 생성입니다. Copilot이 대표적인 예시입니다. 영리한 프롬프트로 수행할 수 있는 코드 생성 작업은 매우 다양합니다. 아래 몇 가지 예시를 살펴봅시다.
 
-먼저, 유저에게 인사를 건네는 단순한 프로그램을 생성해 보겠습니다.
+먼저, 사용자에게 이름을 묻고 인사하는 간단한 프로그램을 시도해봅시다.
 
-*Prompt:*
+*프롬프트:*
 ```
 /*
-유저의 이름을 입력받고 "안녕"이라고 해 줘
+Ask the user for their name and say "Hello"
 */
 ```
 
-*Output:*
+*출력:*
 ```
-let name = prompt("이름이 뭐예요?");
-console.log(`안녕하세요, ${이름}!`);
+let name = prompt("What is your name?");
+console.log(`Hello, ${name}!`);
 ```
 
-어느 프로그래밍 언어를 사용해야 하는지 지정할 필요도 없었습니다.
+사용할 언어를 명시하지 않아도 동작합니다.
 
-좀 더 수준을 올려 보겠습니다. 프롬프트를 어떻게 디자인하느냐에 따라 LLM이 얼마나 더 강력해질 수 있는지 살펴보겠습니다.
+조금 더 복잡한 예시로 넘어가봅시다. 아래 예시는 프롬프트를 조금 더 정교하게 설계하면 LLM이 얼마나 강력해질 수 있는지 보여줍니다.
 
-*Prompt:*
+*프롬프트:*
 ```
 """
-DB테이블 departments, columns = [DepartmentId, DepartmentName]
-DB테이블 students, columns = [DepartmentId, StudentId, StudentName]
-컴퓨터과학부에 속한 모든 학생에 대한 MySQL 쿼리를 작성해 줘
+Table departments, columns = [DepartmentId, DepartmentName]
+Table students, columns = [DepartmentId, StudentId, StudentName]
+Create a MySQL query for all students in the Computer Science Department
 """
 ```
 
-*Output:*
+*출력:*
 ```
-SELECT StudentId, StudentName
-FROM students
+SELECT StudentId, StudentName 
+FROM students 
 WHERE DepartmentId IN (SELECT DepartmentId FROM departments WHERE DepartmentName = 'Computer Science');
 ```
 
-꽤나 인상적입니다. 이 경우, 우리는 데이터베이스 스키마에 대한 정보를 제공하고 정상 작동하는 MySQL 쿼리를 작성하도록 요청했습니다.
+매우 인상적입니다. 이 경우, 데이터베이스 스키마에 대한 정보를 제공하고 유효한 MySQL 쿼리를 생성하도록 요청했습니다.
 
 ---
 
-## 추론
-어떤 형태로든 추론이 필요한 작업은 아마도 오늘날 LLM으로 하기 가장 어려운 작업에 속합니다. 추론은 LLM에서 나타날 수 있는 복잡한 애플리케이션의 유형 중에서 가장 흥미로운 분야 중 하나입니다.
+## 추론(Reasoning)
+오늘날 LLM에게 가장 어려운 작업 중 하나는 일종의 추론(reasoning)을 요구하는 작업입니다. 추론은 LLM에서 복잡한 응용이 등장할 수 있기 때문에 매우 흥미로운 분야입니다.
 
-수학적인 능력을 필요로 하는 작업에서는 눈에 띄는 개선을 보여 주었지만, 현재의 LLM은 추론 작업을 수행하는 데 어려움을 겪기 때문에 훨씬 더 향상된 프롬프트 엔지니어링 기술을 필요로 합니다. 고급 기술에 대해서는 추후의 가이드에서 다루고, 지금은 산술 능력을 증명할 몇 가지 기본적인 예시를 다뤄 보겠습니다.
+수학적 능력이 필요한 작업에서 일부 개선이 이루어졌지만, 현재 LLM은 여전히 추론 작업에 어려움을 겪으므로 더 고급 프롬프트 엔지니어링 기법이 필요합니다. 다음 가이드에서 이러한 고급 기법을 다룰 예정입니다. 지금은 산술 능력을 보여주는 몇 가지 기본 예시만 살펴봅니다.
 
-*Prompt:*
+*프롬프트:*
 ```
-9,000 * 9,000는 뭐야?
+What is 9,000 * 9,000?
 ```
 
-*Output:*
+*출력:*
 ```
 81,000,000
 ```
 
-좀 더 어려운 문제를 시도해 보겠습니다.
+조금 더 어려운 문제를 시도해봅시다.
 
-*Prompt:*
+*프롬프트:*
 ```
-주어진 수 중에서 홀수를 모두 더해서 짝수를 만들어 줘: 15, 32, 5, 13, 82, 7, 1.
+The odd numbers in this group add up to an even number: 15, 32, 5, 13, 82, 7, 1. 
 
-A:
-```
-
-*Output*
-```
-아니요, 주어진 수 중 홀수를 모두 더한 값은 홀수입니다: 119.
+A: 
 ```
 
-이번에는 틀렸습니다! 프롬프트를 개선하여 정확도를 향상해 보겠습니다.
-
-*Prompt:*
+*출력:*
 ```
-주어진 수 중에서 홀수를 모두 더해서 짝수를 만들어 줘: 15, 32, 5, 13, 82, 7, 1.
-
-문제를 단계별로 해결해 봐. 먼저 주어진 수 중 홀수를 찾아낸 뒤, 그것들을 합해서, 결과가 홀수인지 짝수인지 판별해 줘.
+No, the odd numbers in this group add up to an odd number: 119.
 ```
 
-*Output:*
+틀렸네요! 프롬프트를 개선해봅시다.
+
+*프롬프트:*
 ```
-홀수: 15, 5, 13, 7, 1
-총합: 41
-41은 홀수입니다.
+The odd numbers in this group add up to an even number: 15, 32, 5, 13, 82, 7, 1. 
+
+Solve by breaking the problem into steps. First, identify the odd numbers, add them, and indicate whether the result is odd or even. 
 ```
 
-훨씬 낫지 않나요? 참고로 저는 이 명령을 여러 번 시도했지만 시스템은 가끔 오답을 제시했습니다. 더 나은 지시와 예시를 결합하는 것으로 보다 정확한 결과를 얻을 수 있습니다.
+*출력:*
+```
+Odd numbers: 15, 5, 13, 7, 1
+Sum: 41 
+41 is an odd number.
+```
 
-가이드의 이 절에서는 일반적인 애플리케이션의 예시를 계속 소개할 예정입니다.
+훨씬 낫죠? 참고로, 이 작업을 여러 번 시도하면 모델이 가끔 실패하기도 합니다. 더 나은 지시와 예시를 제공하면 더 정확한 결과를 얻을 수 있습니다.
 
-다음 섹션에서는 이러한 모든 작업의 성능을 향상하기 위해 보다 심화된 프롬프트 엔지니어링의 개념과 기법에 대해 설명하겠습니다.
+다음 섹션에서는 이러한 작업과 더 어려운 작업의 성능을 개선하기 위한 고급 프롬프트 엔지니어링 개념과 기법을 다룰 예정입니다.
+
+## 노트북(Notebook)
+
+위의 프롬프트를 Python으로 실습해보고 싶다면, OpenAI 모델을 활용해 프롬프트를 테스트할 수 있는 노트북을 준비했습니다.
+
+- [프롬프트 엔지니어링 시작하기 노트북](https://github.com/dair-ai/Prompt-Engineering-Guide/blob/main/notebooks/pe-lecture.ipynb)

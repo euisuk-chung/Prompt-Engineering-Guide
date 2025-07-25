@@ -1,118 +1,117 @@
-# 생성 데이터셋 다양성 확보(Tackling Generated Datasets Diversity)
+# 생성된 데이터셋 다양성 해결(Tackling Generated Datasets Diversity)
 
-이전 [챕터](https://www.promptingguide.ai/applications/synthetic_rag)에서는 LLM(대형 언어 모델)을 활용해 합성 데이터셋을 생성하고, 이를 로컬 리트리버(Retriever) 모델 파인튜닝에 활용하는 가능성을 다뤘습니다. 이 방법은 대규모 비라벨 문서 코퍼스가 있을 때 각 문서에서 하나 이상의 합성 쿼리를 생성해 쿼리-문서 쌍을 만드는 방식입니다.
+이전 [장](https://www.promptingguide.ai/applications/synthetic_rag)에서 로컬 검색기 모델을 추가로 미세조정하기 위해 합성 데이터셋 생성을 위한 LLM 사용의 잠재력에 대해 논의했습니다. 이 방법은 라벨링되지 않은 문서의 대용량 코퍼스 가용성으로 인해 가능합니다. 각 문서는 하나 이상의 합성 쿼리를 생성하고 쿼리-문서 쌍을 형성하는 데 사용됩니다.
 
-하지만 정보 검색(Information Retrieval)이 아닌 과제라면 어떨까요? 예를 들어, 법률 문서 분류 문제를 다루는데 외부 API로 데이터를 전송할 수 없다면, 로컬 모델을 직접 학습시켜야 합니다. 이때 데이터 수집이 큰 장애물이 되어 제품 개발이 지연될 수 있습니다.
+그런데 정보 검색이 당신의 작업이 아니라면 어떨까요? 법적 문서 분류 문제를 작업하고 있지만 외부 API에 데이터를 보낼 수 없다고 가정해보겠습니다. 이 상황에서는 로컬 모델을 훈련해야 합니다. 그러나 데이터 수집이 중요한 장애물이 되어 제품 개발이 지연될 수 있습니다.
 
-간단한 예로, 동화 생성이 목표라고 가정해봅시다. 이는 [Eldan 등(2023)](https://arxiv.org/abs/2305.07759)의 연구 출발점이기도 합니다. 각 동화는 2~3개의 단락으로 구성되며, 단순한 플롯과 주제를 따르고, 전체 데이터셋은 아동의 어휘와 사실적 지식을 포괄합니다.
+간단히 하기 위해 목표가 아동용 이야기를 생성하는 것이라고 가정해보겠습니다. 이 작업은 [Eldan et al. (2023)](https://arxiv.org/abs/2305.07759)의 연구 시작점이었습니다. 각 이야기는 간단한 플롯과 테마를 따르는 2-3개 단락으로 구성되며, 전체 데이터셋은 아동의 어휘와 사실적 지식을 다룹니다.
 
-언어는 단순한 규칙과 기호 체계가 아니라 의미를 전달·해석하는 수단입니다. LLM으로 학습 데이터를 생성할 때 가장 큰 과제는 데이터셋의 다양성(diversity) 확보입니다. [생성 온도(temperature)](https://www.promptingguide.ai/introduction/settings)를 높여도, 모델이 반복적이고 다양성이 부족한 데이터셋을 생성하는 경우가 많습니다(아동 언어조차도). 일관성(coherence)과 관련성(relevance) 역시 자연어 생성의 주요 도전 과제입니다.
+언어는 단순한 규칙과 기호의 시스템이 아닙니다. 의미를 전달하고 해석합니다. 대규모 언어 모델을 사용하여 훈련 데이터를 생성할 때의 주요 과제는 데이터셋 다양성을 보장하는 것입니다. 높은 [생성 온도](https://www.promptingguide.ai/introduction/settings)에도 불구하고 모델은 필요한 다양성이 부족한 반복적인 데이터셋을 생성할 수 있습니다(아동의 언어에도 불구하고). 일관성과 관련성은 다른 자연어 생성 과제입니다.
 
-이 문제를 해결하기 위해, 저자들은 약 1,500개의 기본 단어(아동 어휘)를 명사, 동사, 형용사로 분류해 준비했습니다. 각 생성 시, 동사 1개, 명사 1개, 형용사 1개를 무작위로 선택해 프롬프트에 포함시켜 이야기를 생성합니다.
+다양성 문제를 해결하기 위해 저자들은 전형적인 아동의 어휘를 반영하는 약 1500개의 기본 단어 어휘를 준비했으며, 이를 명사, 동사, 형용사로 나누었습니다. 각 생성에서 하나의 동사, 하나의 명사, 하나의 형용사가 무작위로 선택되었습니다. 그런 다음 모델은 이러한 무작위 단어들을 통합한 이야기를 생성합니다.
 
-이 기법은 데이터셋의 다양성을 크게 확장해, 아동 어휘 전체와 다양한 개념 조합을 포괄하는 동화를 생성할 수 있게 했습니다. 또한, 대화, 반전, 나쁜 결말, 교훈 등 다양한 스토리 특성(feature)도 랜덤하게 포함시켜 프롬프트에 명시했습니다.
+이 기술은 데이터셋의 다양성을 크게 확장하여 이야기가 아동의 전체 어휘와 다양한 개념 조합을 다루도록 보장했습니다. 또한 저자들은 잠재적 이야기 특징(대화, 플롯 반전, 나쁜 결말, 또는 도덕적 교훈)을 통합했습니다. 이러한 특징의 무작위 하위 집합이 각 이야기에 대해 선택되었고, 모델은 이를 포함하도록 프롬프팅되었습니다.
 
-*프롬프트 예시:*
+*프롬프트:*
 ```
-Write a short story (3-5 paragraphs) which only uses very simple words that a 3 year old child would likely understand. The story should use the verb ”{random.choice(verbs_list)}”, the noun ”{random.choice(nouns_list)}” and the adjective ”{random.choice(adjectives_list)}”. The story should have the following features: {random.choice(features_list)}, {random.choice(features_list)}. Remember to only use simple words!
-```
-
-예를 들어, 다음과 같이 프롬프트를 채울 수 있습니다:
-
-*프롬프트 예시:*
-```
-Write a short story (3-5 paragraphs) which only uses very simple words that a 3 year old child would likely understand. The story should use the verb ”decorate”, the noun ”thunder” and the adjective ”ancient”. The story should have the following features: the story should contain at least one dialogue, the story has a bad ending. Remember to only use simple words!
+3세 아동이 이해할 수 있는 매우 간단한 단어만 사용하는 짧은 이야기(3-5개 단락)를 작성하세요. 이야기는 동사 "{random.choice(verbs_list)}", 명사 "{random.choice(nouns_list)}", 형용사 "{random.choice(adjectives_list)}"를 사용해야 합니다. 이야기는 다음 특징을 가져야 합니다: {random.choice(features_list)}, {random.choice(features_list)}. 간단한 단어만 사용하는 것을 기억하세요!
 ```
 
-*출력 예시:*
+간격이 다음과 같이 채워졌다고 가정해보겠습니다:
+
+*프롬프트:*
 ```
-Once upon a time, in an ancient house, there lived a girl named Lily. She loved to decorate her room with pretty things. One day, she found a big box in the attic. She opened it and saw many shiny decorations. Lily was very happy and decided to use them in her room. As Lily was decorating her room, the sky outside became dark. There was a loud thunder sound, and Lily got scared. She ran to her mom and said, ”Mommy, the thunder is so loud!” Her mom hugged her and said, ”Don’t worry, it will pass soon.” But the thunder did not stop. It got louder and louder, and the ancient house started to shake. Suddenly, the roof fell down on the pretty decorations. Lily was sad because her room was not pretty anymore. The end.
+3세 아동이 이해할 수 있는 매우 간단한 단어만 사용하는 짧은 이야기(3-5개 단락)를 작성하세요. 이야기는 동사 "장식하다", 명사 "천둥", 형용사 "고대의"를 사용해야 합니다. 이야기는 다음 특징을 가져야 합니다: 이야기는 최소 하나의 대화를 포함해야 하고, 이야기는 나쁜 결말을 가져야 합니다. 간단한 단어만 사용하는 것을 기억하세요!
 ```
 
-이처럼 최신 텍스트 생성 모델(GPT-3.5, GPT-4 등)은 지침에 따라 대량의 합성 콘텐츠를 생성할 수 있습니다. 프롬프트가 매번 무작위로 구성되고, 모델이 이를 정확히 따르기 때문에 이야기는 매우 다양하게 생성됩니다. 한두 단어만 같아도 완전히 다른 이야기가 만들어집니다. 즉, 프롬프트에 무작위성을 주입해 다양한 데이터셋을 생성하는 방식입니다.
+*출력:*
+```
+옛날 옛날에, 고대의 집에 릴리라는 소녀가 살았습니다. 그녀는 예쁜 것들로 방을 장식하는 것을 좋아했습니다. 어느 날, 그녀는 다락방에서 큰 상자를 발견했습니다. 그녀는 그것을 열고 많은 반짝이는 장식품들을 보았습니다. 릴리는 매우 행복했고 방에서 그것들을 사용하기로 결정했습니다. 릴리가 방을 장식하고 있을 때, 밖의 하늘이 어두워졌습니다. 큰 천둥 소리가 났고, 릴리는 무서워했습니다. 그녀는 엄마에게 달려가서 "엄마, 천둥이 너무 시끄러워요!"라고 말했습니다. 그녀의 엄마는 그녀를 안아주고 "걱정하지 마, 곧 지나갈 거야"라고 말했습니다. 하지만 천둥은 멈추지 않았습니다. 점점 더 시끄러워졌고, 고대의 집이 흔들리기 시작했습니다. 갑자기, 지붕이 예쁜 장식품들 위로 떨어졌습니다. 릴리는 방이 더 이상 예쁘지 않아서 슬펐습니다. 끝.
+```
 
-핵심 절차는 다음과 같습니다:
+여기서 우리는 지시사항에 따라 방대한 양의 합성 콘텐츠를 생성할 수 있는 최신 텍스트 생성 모델(GPT-3.5와 GPT-4)에 의존합니다. 매번 프롬프트를 무작위로 공식화하고 모델이 정확히 준수하기 때문에 이야기는 믿을 수 없을 정도로 다양해집니다. 한 두 단어가 동일하게 유지되더라도 내러티브는 완전히 다를 것입니다. 본질적으로 우리는 이 기술을 적용하여 프롬프트에 무작위성을 주입하고 다양한 데이터셋을 생성합니다.
 
-1. 합성 데이터셋 샘플 간 변동 가능한 파라미터/엔티티 식별
-2. 이 엔티티들을 수집·정리해 빈칸 채우기용 풀(pool)로 활용
-3. 엔티티를 무작위로 선택해 데이터셋 생성(생성 온도는 기본값보다 높게, 최대값보다는 낮게 설정 권장)
-4. ChatGPT/GPT-4의 생성 결과로 로컬 모델 학습
+아이디어를 얻을 수 있습니다:
 
-여기서 엔티티 중 하나는 클래스 레이블이 될 수도 있습니다. 예를 들어, 감정 분류 과제에서는 프롬프트에 "positive" 또는 "negative"를 직접 명시해 해당 레이블의 텍스트를 생성하고, 이를 로컬 분류기 학습에 활용할 수 있습니다.
+1. 합성 데이터셋의 서로 다른 샘플 간에 어떤 매개변수/엔티티가 달라질 수 있는지 식별합니다;
+2. 간격을 채우기 위해 이러한 엔티티들의 컬렉션을 생성하거나 수동으로 컴파일합니다;
+3. 삽입을 위해 엔티티를 무작위로 선택하여 데이터셋을 생성합니다. 생성 온도를 기본값보다 높지만 최대값보다 낮게 설정하는 것이 좋습니다;
+4. ChatGPT/GPT-4의 생성 결과에 대해 로컬 모델을 훈련합니다.
+
+생성을 시드하는 데 사용되는 엔티티 중 하나가 클래스 라벨일 수 있다는 점에 주목하는 것이 중요합니다. 예를 들어, 감정 분류 작업에서 프롬프트에 직접 "긍정" 또는 "부정"을 언급하여 해당 라벨이 있는 생성된 텍스트를 받을 수 있습니다. 그런 다음 이 데이터에 대해 로컬 분류기가 훈련됩니다.
 
 # 반복적(계층적) 합성 데이터 생성(Iterative (Hierarchical) Synthetic Data Generation)
 
-엔티티 수를 늘리거나 일부 엔티티를 LLM이 사전 생성하도록 하여, 더 복잡한 프롬프트 구조도 가능합니다. 예를 들어, 먼저 이야기 요약(summary)와 반드시 포함되어야 할 문장(sentence)을 생성한 뒤, 이를 최종 프롬프트에 삽입해 이야기를 생성할 수 있습니다.
+형식은 더 많은 엔티티를 사용하여 더 복잡하게 만들 수 있으며, 그 중 일부는 LLM 자체에 의해 미리 생성됩니다. 예를 들어, 이야기 요약을 생성하라는 요청으로 시작하고 이야기에 나타나야 하는 한 문장을 적을 수 있습니다. 나중에 최종 요청에서 생성된 중간 데이터를 사용하기만 하면 됩니다.
 
-*프롬프트 예시:*
+*프롬프트:*
 ```
-Summary: {a short summary generated by LLM, using the approach above}
-Features: {copy the features from the initial prompt}
-Sentence: {a sentence generated by LLM, which should be present in the story}
-Words: {copy the words from the initial prompt}
-Story:
-```
-
-예시:
-
-*프롬프트 예시:*
-```
-Summary: Lily and Timmy build a sandcastle together and learn to compromise, but it gets knocked over by a gust of wind. They find beauty in the broken sandcastle and play happily with a butterfly.
-Features: Dialogue, Foreshadowing, Twist
-Sentence: One day, she went to the park and saw a beautiful butterfly.
-Words: disagree, network, beautiful
-Story:
+요약: {위의 접근 방식을 사용하여 LLM이 생성한 짧은 요약}
+특징: {초기 프롬프트에서 특징을 복사}
+문장: {LLM이 생성한 문장으로, 이야기에 나타나야 함}
+단어: {초기 프롬프트에서 단어를 복사}
+이야기:
 ```
 
-*출력 예시:*
+채워진 프롬프트의 예시:
+
+*프롬프트:*
 ```
-Once upon a time, there was a little girl named Lily. She loved to play with her toys and her friends. One day, she went to the park and saw a beautiful butterfly. She tried to catch it, but it flew away. Lily’s friend, Timmy, came to play with her. They decided to build a sandcastle, but they disagreed on how to build it. Lily wanted to make it tall, while Timmy wanted to make it wide. They argued for a while, but finally agreed to make it both tall and wide. As they were building the sandcastle, they noticed a group of ants working together. They realized that the ants were building a network of tunnels. Suddenly, a gust of wind came and knocked over their sandcastle. They were sad, but then they saw the butterfly again. It landed on the remains of their sandcastle and they realized that it was still beautiful, even in its broken state. They smiled and played together happily.
-```
-
-이처럼 수십만 개의 다양한 예시를 생성해 모델 학습에 활용할 수 있습니다. 예를 들어, 텍스트에 대화(dialogue)나 반전(plot twist)이 포함되어 있는지 분류하는 분류기를 학습하려면, 프롬프트에 레이블을 명시해 생성된 샘플별로 타깃 값을 알 수 있습니다.
-
-# 교과서만 있으면 된다(Textbooks Are All You Need)
-
-이 접근법에서 중요한 질문은, 합성 데이터셋이 실제 응용에서 네트워크 학습에 진정한 이점을 제공할 수 있는가입니다. 다행히도, 저자들은 이 질문에 대한 실험을 통해 SOTA LLM에서 생성한 합성 데이터로 소형 언어 모델을 학습시켜 그 효과를 검증했습니다.
-
-[Gunasekar 등(2023)](https://arxiv.org/abs/2306.11644)은 고품질 학습 데이터의 중요성을 강조하며, 언어 모델이 "교과서"와 같은 특성(명확성, 포괄성, 정보성, 편향 없음)을 갖춘 자료로 학습될 때 더 효과적이라고 주장합니다.
-
-이 원칙을 바탕으로, 저자들은 LLM(Phi-1) 학습을 위한 준합성(semi-synthetic) 데이터셋을 제작했습니다. 주요 평가 과제는 주어진 텍스트 설명 또는 독스트링(docstring)에 따라 파이썬 함수를 생성하는 것입니다. 모델 품질 평가는 HumanEval 벤치마크([Chen 등, 2021](https://arxiv.org/abs/2107.03374))로 진행됩니다.
-
-이 접근법에서 다양성은 여러 이유로 매우 중요합니다. 다양한 코딩 표현과 문제 해결 방식을 모델에 노출시켜 과적합(overfitting)이나 특정 패턴 의존을 줄이고, 새로운 과제에 대한 적응력을 높일 수 있습니다.
-
-코드 생성 과제에서는 다음과 같은 제약을 두고 교과서 스타일의 문서를 생성했습니다:
-- 주제(topics)
-- 타깃 독자(target audience)
-
-아쉽게도, 합성 데이터 생성에 사용된 프롬프트 템플릿은 공개되지 않았으나, 결과물은 논문에서 확인할 수 있습니다. 저자들은 GPT-4 대신 ChatGPT(GPT-3.5)를 사용했으며, 이 전략만으로도 합성 데이터로 파인튜닝 시 우수한 결과를 얻었습니다.
-
-![생성된 교과서 스타일 샘플](../../img/synthetic_diversity/textbooks_1.png)
-
-이미지 출처: [Gunasekar 등(2023)](https://arxiv.org/abs/2306.11644)
-
-특히 타깃 독자 제약에 주목해야 합니다. 고등학생, 학부생, 박사과정 등 대상에 따라 설명 방식과 정보 처리 방식이 달라지므로, 데이터 다양성을 높일 수 있습니다. 아래는 프롬프트 재현 예시입니다.
-
-*프롬프트 예시:*
-```
-Write an extract from a Computer Science textbook for a 1st-year bachelor. The coding language is Python 3.6.
-
-This is an extract from the middle of the following topic: Singular matrices.
-
-The extract starts with a high-level overview of the topic. Then, it presents an example and describes the solution in natural language. After that, it provides 1-2 code snippets, following the example. Each snippet has no more than 10 rows. There should be no text after code snippets.
-
-Keep in mind that the extract should be concise and explain only one concept at a time.  The code should represent a Python function & its call. All the common ML/DS libraries are available.
-
-Don't be too verbose. The expected length of the extract is 2 paragraphs at most.
+요약: 릴리와 티미는 함께 모래성을 쌓고 타협하는 법을 배우지만, 바람에 의해 무너집니다. 그들은 부서진 모래성에서 아름다움을 발견하고 나비와 함께 행복하게 놉니다.
+특징: 대화, 복선, 반전
+문장: 어느 날, 그녀는 공원에 가서 아름다운 나비를 보았습니다.
+단어: 동의하지 않다, 네트워크, 아름다운
+이야기:
 ```
 
-*출력 예시:*
+*출력:*
 ```
-**Singular Matrices**
+옛날 옛날에, 릴리라는 어린 소녀가 있었습니다. 그녀는 장난감과 친구들과 놀기를 좋아했습니다. 어느 날, 그녀는 공원에 가서 아름다운 나비를 보았습니다. 그녀는 그것을 잡으려고 했지만 날아갔습니다. 릴리의 친구 티미가 그녀와 놀러 왔습니다. 그들은 모래성을 쌓기로 결정했지만 어떻게 쌓을지 동의하지 않았습니다. 릴리는 높게 만들고 싶어했고, 티미는 넓게 만들고 싶어했습니다. 그들은 잠시 논쟁했지만, 마침내 높고 넓게 만드는 것에 동의했습니다. 모래성을 쌓고 있을 때, 그들은 함께 일하는 개미 무리를 발견했습니다. 그들은 개미들이 터널 네트워크를 구축하고 있다는 것을 깨달았습니다. 갑자기, 바람이 불어와서 그들의 모래성을 무너뜨렸습니다. 그들은 슬펐지만, 다시 나비를 보았습니다. 그것은 그들의 모래성 잔해에 착륙했고, 그들은 그것이 부서진 상태에서도 여전히 아름답다는 것을 깨달았습니다. 그들은 미소를 지으며 함께 행복하게 놀았습니다.
+```
 
-In linear algebra, a matrix is termed as "singular" if it doesn't have an inverse. Another equivalent definition is when the determinant of the matrix is zero. Singular matrices are crucial because they represent systems of linear equations that do not have a unique solution.
+따라서 모델을 훈련하기 위해 수십만 개의 매우 다양한 예시를 생성하는 것이 가능합니다. 텍스트에 대화나 플롯 반전이 포함되어 있는지 판단하는 분류기를 훈련해야 한다고 가정해보겠습니다. 초기 프롬프트에 라벨이 포함되어 있으므로 각 생성된 샘플에 대해 예측해야 하는 대상 값이 알려져 있습니다.
 
-Consider a 2x2 matrix `[[a, b], [c, d]]`. If the product of `ad` and `bc` is the same (i.e., `ad = bc`), then this matrix is singular. Let's explore this with an example: given the matrix `[[2, 4], [1, 2]]`, you'll find that the product of the diagonals yields the same result (2 * 2 = 4 * 1), thus it's a singular matrix.
+# 교과서가 필요한 모든 것(Textbooks Are All You Need)
+
+이 접근 방식에서 발생하는 중요한 질문은 데이터셋의 합성이 실제 세계 응용 프로그램을 위한 네트워크 훈련 시 정말로 혜택을 제공할 수 있는지 여부입니다. 다행히 저자들은 최첨단 LLM에서 파생된 합성 데이터를 사용하여 더 작은 언어 모델 훈련의 효능을 조사하고 검증함으로써 이 질문을 해결했습니다.
+
+그들의 연구에서 [Gunasekar et al. (2023)](https://arxiv.org/abs/2306.11644)는 모델에서 고품질 훈련 데이터의 중요성을 강조합니다. 그들은 언어 모델이 잘 알려진 "교과서"의 특징과 유사한 자료로 훈련된다면 더 효과적일 것이라고 주장합니다: 명확하고, 포괄적이며, 정보가 풍부하고, 편향되지 않은.
+
+이러한 원칙은 Phi-1이라는 LLM을 훈련하기 위한 반합성 데이터셋 생성의 기반을 형성했습니다. 주요 평가 작업은 주어진 텍스트 설명이나 독스트링을 따르는 Python 함수를 생성하는 것입니다. 모델의 품질은 HumanEval 벤치마크([Chen et al., 2021](https://arxiv.org/abs/2107.03374))를 사용하여 평가됩니다.
+
+저자들은 여러 가지 이유로 이 접근 방식에서 다양성의 중요성을 강조합니다. 이는 언어 모델을 다양한 코딩 표현과 문제 해결 접근 방식에 노출시키고, 과적합이나 특정 패턴에 의존할 위험을 줄이며, 익숙하지 않거나 혁신적인 작업을 처리하는 모델의 능력을 향상시킵니다.
+
+코드 작성 과제를 해결하기 위해 저자들은 추론과 기본 알고리즘 기술을 촉진하는 주제에 초점을 맞춘 교과서와 같은 문서를 만들었습니다. 그들은 다음에 제한을 두어 다양성을 달성했습니다:
+
+- 주제
+- 대상 청중
+
+안타깝게도 저자들은 합성 데이터를 생성하는 데 사용된 프롬프트 템플릿에 대한 구체적인 정보를 제공하지 않았습니다. 그러나 그들은 결과 출력을 보여주었습니다. 그들은 GPT-4 대신 ChatGPT(GPT-3.5)를 사용하기로 선택했고, 심지어 이 전략도 합성 데이터를 사용하여 모델을 미세조정했기 때문에 훌륭한 결과를 얻었습니다.
+
+이미지 출처: [Gunasekar et al. (2023)](https://arxiv.org/abs/2306.11644)
+
+대상 청중 제약에 주의를 기울이는 것이 중요합니다. 대상 청중을 지정하는 것은 합성 데이터 다양성을 향상시키는 훌륭한 방법입니다. 고등학생, CS 학부생, 박사 과정 학생은 확실히 설명을 다르게 표현하고 정보를 다르게 처리하여 생성된 데이터를 더욱 다양하게 만듭니다. 프롬프트를 재생성해보겠습니다.
+
+*프롬프트:*
+```
+1학년 학사 과정을 위한 컴퓨터 과학 교과서의 발췌문을 작성하세요. 코딩 언어는 Python 3.6입니다.
+
+이것은 다음 주제의 중간에서 발췌한 것입니다: 특이 행렬.
+
+발췌문은 주제의 고수준 개요로 시작합니다. 그런 다음 예시를 제시하고 자연어로 해결책을 설명합니다. 그 후, 예시에 따라 1-2개의 코드 스니펫을 제공합니다. 각 스니펫은 10행을 초과하지 않습니다. 코드 스니펫 후에는 텍스트가 없어야 합니다.
+
+발췌문이 간결하고 한 번에 하나의 개념만 설명해야 한다는 것을 기억하세요. 코드는 Python 함수와 그 호출을 나타내야 합니다. 모든 일반적인 ML/DS 라이브러리를 사용할 수 있습니다.
+
+너무 장황하지 마세요. 발췌문의 예상 길이는 최대 2개 단락입니다.
+```
+
+*출력:*
+```
+**특이 행렬**
+
+선형 대수학에서 행렬은 역행렬이 없으면 "특이"라고 합니다. 또 다른 동등한 정의는 행렬의 행렬식이 0일 때입니다. 특이 행렬은 고유한 해가 없는 선형 방정식 시스템을 나타내기 때문에 중요합니다.
+
+2x2 행렬 `[[a, b], [c, d]]`를 고려해보세요. `ad`와 `bc`의 곱이 같다면(즉, `ad = bc`), 이 행렬은 특이입니다. 예시로 이를 탐색해보겠습니다: 행렬 `[[2, 4], [1, 2]]`가 주어지면, 대각선의 곱이 같은 결과를 산출한다는 것을 발견할 것입니다(2 * 2 = 4 * 1), 따라서 특이 행렬입니다.
 
 import numpy as np
 
@@ -121,15 +120,15 @@ def is_singular(matrix):
     return abs(determinant) < 1e-9
 
 matrix_example = np.array([[2, 4], [1, 2]])
-print(is_singular(matrix_example))  # returns True
+print(is_singular(matrix_example))  # True를 반환
 ```
 
-실제로 저자들은 총 10억(1B) 토큰을 생성해 모델 학습에 활용했고, 이를 통해 1.5B 파라미터 소형 모델이 10배 더 큰 모델과 경쟁할 수 있었습니다(자세한 내용은 [Gunasekar 등(2023)](https://arxiv.org/abs/2306.11644) 참고).
+꽤 비슷합니다!
 
-![Phi-1 성능, 대형 모델과 비교](../../img/synthetic_diversity/textbooks_2.png)
+전체적으로 저자들은 모델의 훈련 세트를 증강하기 위해 1B 토큰을 생성했으며, 이는 더 작은 모델(단 1.5B 매개변수)이 크기가 10배인 모델과 경쟁할 수 있게 했습니다(자세한 내용은 [Gunasekar et al. (2023)](https://arxiv.org/abs/2306.11644) 논문 참조).
 
-이미지 출처: [Gunasekar 등(2023)](https://arxiv.org/abs/2306.11644)
+이미지 출처: [Gunasekar et al. (2023)](https://arxiv.org/abs/2306.11644)
 
-실제 업무에서는 이 정도 대규모 합성 데이터가 필요하지 않을 수 있습니다(논문은 사전학습용 대규모 데이터 기준). 참고로, 1k 토큰당 $0.002(표준 ChatGPT 요금) 기준, 10억 토큰 생성에는 약 $2000, 프롬프트 비용도 비슷하게 소요됩니다.
+당신의 작업에서는 아마도 그렇게 많은 양의 합성 데이터가 필요하지 않을 것입니다(저자들이 상당한 리소스가 필요한 사전 훈련을 연구했기 때문). 그러나 추정치로도 1k 토큰당 `$0.002`의 가격(표준 ChatGPT 가격)으로 생성된 토큰에 `$2000`가 들고 프롬프트에 대략 같은 금액이 들 것입니다.
 
-합성 데이터 파인튜닝은 도메인이 특수할수록(특히 비영어권 등) 더 큰 효과를 보입니다. 또한, [연쇄적 사고(CoT)](https://www.promptingguide.ai/techniques/cot) 등 다양한 프롬프트 기법과도 잘 결합됩니다. 오픈소스 모델(Alpaca, Vicuna 등)도 합성 데이터 파인튜닝으로 뛰어난 성능을 보이고 있습니다. 
+도메인이 더 틈새가 될수록, 특히 언어가 영어에서 벗어날 때(다른 요소들 중에서) 합성 데이터에 대한 미세조정이 더 가치가 된다는 것을 기억하세요. 또한 이 방법은 [사고 연쇄(Chain-of-Thought, CoT)](https://www.promptingguide.ai/techniques/cot)와 잘 작동하여 로컬 모델의 추론 능력을 향상시키는 데 도움이 됩니다. 다른 프롬프팅 기법도 작동합니다. 그리고 Alpaca([Taori et al., (2023)](https://crfm.stanford.edu/2023/03/13/alpaca.html))와 Vicuna([Zheng et al., (2023)](https://lmsys.org/blog/2023-03-30-vicuna/))와 같은 오픈소스 모델들이 합성 데이터에 대한 미세조정을 통해 뛰어난 성능을 보인다는 것을 잊지 마세요. 

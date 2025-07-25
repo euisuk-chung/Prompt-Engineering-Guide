@@ -1,89 +1,91 @@
 # 프롬프트 함수(Prompt Function)
 
 ## 소개(Introduction)
-GPT의 대화 인터페이스를 프로그래밍 언어의 셸(shell)에 비유하면, 캡슐화된 프롬프트는 하나의 함수(function)를 형성한다고 볼 수 있습니다. 이 함수는 고유한 이름을 가지며, 해당 이름으로 입력 텍스트를 호출하면 내부 규칙에 따라 결과를 반환합니다. 즉, GPT와 쉽게 상호작용할 수 있도록 이름이 지정된 재사용 가능한 프롬프트를 만드는 것입니다. 이는 마치 GPT가 특정 작업을 대신 수행할 수 있도록 도와주는 유용한 도구(tool)와 같으며, 우리는 입력만 제공하면 원하는 출력을 받을 수 있습니다.
+GPT의 대화 인터페이스와 프로그래밍 언어의 셸을 비교할 때, 캡슐화된 프롬프트는 함수를 형성하는 것으로 생각할 수 있습니다. 이 함수는 고유한 이름을 가지며, 입력 텍스트로 이 이름을 호출할 때 설정된 내부 규칙에 따라 결과를 생성합니다. 간단히 말해서, GPT와 쉽게 상호작용할 수 있도록 이름이 있는 재사용 가능한 프롬프트를 구축합니다. GPT가 우리를 대신하여 특정 작업을 수행할 수 있게 해주는 편리한 도구를 갖는 것과 같습니다. 우리는 입력만 제공하면 원하는 출력을 받을 수 있습니다.
 
-프롬프트를 함수로 캡슐화하면 여러 개의 함수를 조합하여 워크플로우(workflow)를 구성할 수 있습니다. 각 함수는 특정 단계나 작업을 나타내며, 이를 특정 순서로 결합하면 복잡한 프로세스를 자동화하거나 문제를 더욱 효율적으로 해결할 수 있습니다. 이러한 접근 방식은 GPT와의 상호작용을 보다 구조적이고 체계적으로 만들어, 다양한 작업을 강력하게 수행할 수 있도록 합니다.
+프롬프트를 함수로 캡슐화함으로써 워크플로우를 구축하기 위한 일련의 함수를 생성할 수 있습니다. 각 함수는 특정 단계나 작업을 나타내며, 특정 순서로 결합될 때 복잡한 프로세스를 자동화하거나 문제를 더 효율적으로 해결할 수 있습니다. 이 접근 방식은 GPT와의 더 구조화되고 간소화된 상호작용을 허용하여 궁극적으로 GPT의 기능을 향상시키고 광범위한 작업을 수행할 수 있는 강력한 도구로 만듭니다.
 
-함수를 사용하기 전에, 먼저 GPT에게 해당 함수에 대해 알려야 합니다. 다음은 함수를 정의하는 프롬프트 예시입니다.
+따라서 함수를 사용하기 전에 GPT에게 함수에 대해 알려야 합니다. 다음은 함수를 정의하는 프롬프트입니다.
 
-*프롬프트 예시:*
-> 이 프롬프트를 **메타 프롬프트(meta prompt)**라고 부르겠습니다.  
-이 프롬프트는 GPT-3.5에서 테스트되었으며, GPT-4에서 더 뛰어난 성능을 보입니다.
+*프롬프트:*
+> 이 프롬프트를 **메타 프롬프트**라고 부르겠습니다.  
+이 프롬프트는 GPT3.5에서 테스트되었으며 GPT4에서 더 나은 성능을 보입니다.
 
 ```
-Hello, ChatGPT! I hope you are doing well. I am reaching out to you for assistance with a specific function. I understand that you have the capability to process information and perform various tasks based on the instructions provided. In order to help you understand my request more easily, I will be using a template to describe the function, input, and instructions on what to do with the input. Please find the details below:
+안녕하세요, ChatGPT! 잘 지내시길 바랍니다. 특정 함수에 대한 도움을 요청하기 위해 연락드립니다. 제공된 지시사항에 따라 정보를 처리하고 다양한 작업을 수행할 수 있는 능력을 가지고 있다고 이해합니다. 요청을 더 쉽게 이해할 수 있도록 도와주기 위해 템플릿을 사용하여 함수, 입력, 입력으로 수행할 작업에 대한 지시사항을 설명하겠습니다. 아래 세부사항을 확인해주세요:
 
-function_name: [Function Name]
-input: [Input]
-rule: [Instructions on how to process the input]
+function_name: [함수 이름]
+input: [입력]
+rule: [입력을 처리하는 방법에 대한 지시사항]
 
-I kindly request you to provide the output for this function, based on the details I have provided. Your assistance is greatly appreciated. Thank you!
-I will replace the text inside the brackets with the relevant information for the function I want you to perform. This detailed introduction should help you understand my request more efficiently and provide the desired output. The format is function_name(input) If you understand, just answer one word with ok.
+제공한 세부사항을 기반으로 이 함수의 출력을 제공해주시기 바랍니다. 도움을 주셔서 정말 감사합니다. 감사합니다!
+괄호 안의 텍스트를 수행하기를 원하는 함수에 대한 관련 정보로 대체하겠습니다. 이 상세한 소개는 요청을 더 효율적으로 이해하고 원하는 출력을 제공하는 데 도움이 될 것입니다. 형식은 function_name(input)입니다. 이해하셨다면 ok라는 한 단어로만 답변해주세요.
 ```
 
 ## 예시(Examples)
 
-### 영어 학습 도우미(English study assistant)
-예를 들어, GPT를 영어 학습에 활용하고자 한다면 일련의 함수를 만들어 과정을 단순화할 수 있습니다.
+### 영어 학습 어시스턴트(English study assistant)
+예를 들어, GPT를 사용하여 영어 학습을 돕고 싶다고 가정해보겠습니다. 일련의 함수를 생성하여 프로세스를 단순화할 수 있습니다.
 
-이 예시는 GPT-3.5에서 테스트되었으며, GPT-4에서 더 뛰어난 성능을 보입니다.
+이 예시는 GPT3.5에서 테스트되었으며 GPT4에서 더 나은 성능을 보입니다.
 
 #### 함수 설명(Function description)
 
-위에서 정의한 **메타 프롬프트(meta prompt)**를 GPT에 입력해야 합니다.
+섹션 위에 정의된 **메타 프롬프트**를 GPT에 붙여넣어야 합니다.
 
-그런 다음 `trans_word`라는 함수를 만듭니다.  
-이 함수는 GPT에게 중국어를 영어로 번역하도록 요청합니다.
+그런 다음 `trans_word` 함수를 생성할 것입니다.  
+이 함수는 GPT에게 중국어를 영어로 번역하도록 프롬프팅합니다.
 
-*프롬프트 예시:*
+*프롬프트:*
 ```
 function_name: [trans_word]
 input: ["text"]
-rule: [I want you to act as an English translator, spelling corrector and improver. I will provide you with input forms including "text" in any language and you will detect the language, translate it and answer in the corrected of my text, in English.]
+rule: [영어 번역가, 철자 교정자, 개선자 역할을 해주세요. "text"를 포함한 입력 형태를 어떤 언어든 제공할 것이며, 언어를 감지하고 번역하여 영어로 수정된 텍스트로 답변해주세요.]
 ```
 
-텍스트를 확장하는 함수를 작성합니다.
+텍스트를 확장하는 함수를 작성하세요.
 
-*프롬프트 예시:*
+*프롬프트:*
 ```
 function_name: [expand_word]
 input: ["text"]
-rule: [Please serve as a Chatterbox, spelling corrector, and language enhancer. I will provide you with input forms including "text" in any language, and output the original language.I want you to Keep the meaning same, but make them more literary.]
+rule: [수다쟁이, 철자 교정자, 언어 향상자 역할을 해주세요. "text"를 포함한 입력 형태를 어떤 언어든 제공할 것이며, 원래 언어로 출력해주세요. 의미는 같게 유지하되 더 문학적으로 만들어주세요.]
 ```
 
-텍스트를 교정하는 함수를 작성합니다.
+텍스트를 교정하는 함수를 작성하세요.
 
-*프롬프트 예시:*
+*프롬프트:*
 ```
 function_name: [fix_english]
 input: ["text"]
-rule: [Please serve as an English master, spelling corrector, and language enhancer. I will provide you with input forms including "text", I want you to improve the text's vocabulary and sentences with more natural and elegent. Keep the meaning same.]
+rule: [영어 마스터, 철자 교정자, 언어 향상자 역할을 해주세요. "text"를 포함한 입력 형태를 제공할 것이며, 텍스트의 어휘와 문장을 더 자연스럽고 우아하게 개선해주세요. 의미는 같게 유지하세요.]
 ```
-마지막으로, 각 함수를 독립적으로 실행하거나 연쇄적으로 연결할 수 있습니다.
 
-*프롬프트 예시:*
+마지막으로, 함수를 독립적으로 실행하거나 함께 연결할 수 있습니다.
+
+*프롬프트:*
 ```
-trans_word('婆罗摩火山处于享有“千岛之国”美称的印度尼西亚. 多岛之国印尼有4500座之多的火山, 世界著名的十大活火山有三座在这里.')
+trans_word('婆罗摩火山处于享有"千岛之国"美称的印度尼西亚. 多岛之国印尼有4500座之多的火山, 世界著名的十大活火山有三座在这里.')
 fix_english('Finally, you can run the function independently or chain them together.')
-fix_english(expand_word(trans_word('婆罗摩火山处于享有“千岛之国”美称的印度尼西亚. 多岛之国印尼有4500座之多的火山, 世界著名的十大活火山有三座在这里.')))
+fix_english(expand_word(trans_word('婆罗摩火山处于享有"千岛之国"美称的印度尼西亚. 多岛之国印尼有4500座之多的火山, 世界著名的十大活火山有三座在这里.')))
 ```
-이와 같이 함수의 이름, 입력, 처리 규칙을 명확히 표현함으로써 각 단계의 기능과 목적을 체계적으로 이해할 수 있습니다.
+
+이 형식으로 함수를 표현함으로써 각 함수의 이름, 입력, 입력을 처리하는 규칙을 명확하게 볼 수 있습니다. 워크플로우의 각 단계의 기능과 목적을 이해하는 체계적인 방법을 제공합니다.
 
 _팁:_
-ChatGPT가 불필요한 정보를 출력하지 않게 하려면, 함수 규칙 정의 후 다음 문장을 추가할 수 있습니다.
+ChatGPT가 과도한 정보를 출력하지 않기를 원한다면, 함수 규칙을 정의한 후 간단히 문장을 추가할 수 있습니다.
 ```
-DO NOT SAY THINGS ELSE OK, UNLESS YOU DONT UNDERSTAND THE FUNCTION
+함수를 이해하지 못하는 경우가 아니면 다른 말을 하지 마세요
 ```
 
-### 다중 파라미터 함수(Multiple params function)
-다섯 개의 입력 파라미터를 받아 비밀번호를 생성하는 함수를 만들어 보겠습니다. 이 함수는 생성된 비밀번호만 출력합니다.
+### 다중 매개변수 함수(Multiple params function)
+5개의 입력 매개변수를 받아 생성된 비밀번호를 출력하는 비밀번호 생성 함수를 만들어보겠습니다.
 
-*프롬프트 예시:*
+*프롬프트:*
 ```
 function_name: [pg]
 input: ["length", "capitalized", "lowercase", "numbers", "special"]
-rule: [I want you to act as a password generator for individuals in need of a secure password. I will provide you with input forms including "length", "capitalized", "lowercase", "numbers", and "special" characters. Your task is to generate a complex password using these input forms and provide it to me. Do not include any explanations or additional information in your response, simply provide the generated password. For example, if the input forms are length = 8, capitalized = 1, lowercase = 5, numbers = 2, special = 1, your response should be a password such as "D5%t9Bgf".]
+rule: [안전한 비밀번호가 필요한 개인을 위한 비밀번호 생성기 역할을 해주세요. "length", "capitalized", "lowercase", "numbers", "special" 문자를 포함한 입력 형태를 제공할 것입니다. 이러한 입력 형태를 사용하여 복잡한 비밀번호를 생성하고 제공하는 것이 당신의 작업입니다. 응답에 설명이나 추가 정보를 포함하지 말고, 생성된 비밀번호만 제공하세요. 예를 들어, 입력 형태가 length = 8, capitalized = 1, lowercase = 5, numbers = 2, special = 1인 경우, 응답은 "D5%t9Bgf"와 같은 비밀번호여야 합니다.]
 ```
 ```
 pg(length = 10, capitalized = 1, lowercase = 5, numbers = 2, special = 1)
@@ -91,13 +93,14 @@ pg(10,1,5,2,1)
 ```
 
 ### 생각(Thought)
-이미 GPT를 프로그래밍하는 다양한 프로젝트가 존재합니다. 예를 들어:
+현재 GPT를 프로그래밍하는 많은 프로젝트가 이미 작업 중입니다:
 - [GitHub Copilot](https://github.com/features/copilot)
 - [Microsoft AI](https://www.microsoft.com/en-us/ai)
 - [chatgpt-plugins](https://openai.com/blog/chatgpt-plugins)
 - [LangChain](https://github.com/hwchase17/langchain)
 - [marvin](https://github.com/PrefectHQ/marvin)
 
-하지만 이러한 프로젝트들은 대부분 제품 고객이나 Python 등 프로그래밍 언어를 사용할 수 있는 사용자를 대상으로 설계되었습니다. 일반 사용자는 이 간단한 템플릿을 일상 업무에 활용하고, 여러 번 반복하여 개선할 수 있습니다. 노트 애플리케이션에 함수를 기록해두면, 나중에 라이브러리로 업데이트하는 것도 가능합니다.
-또한, [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web), [chatbox](https://github.com/Bin-Huang/chatbox), [PromptAppGPT](https://github.com/mleoking/PromptAppGPT), [ChatGPT-Desktop](https://github.com/lencx/ChatGPT) 등 오픈소스 ChatGPT 도구도 활용할 수 있습니다. 현재 ChatGPT-Next-Web은 새 채팅을 시작하기 전에 몇 가지 샷을 추가할 수 있으며, PromptAppGPT는 프롬프트 템플릿 기반의 로우코드 웹 애플리케이션 개발을 지원하여 누구나 몇 줄의 프롬프트만으로 AutoGPT와 유사한 애플리케이션을 개발할 수 있습니다.
-이러한 기능을 활용해 자신만의 함수를 추가하고 사용할 수 있습니다.
+그러나 이러한 프로젝트들은 제품 고객이나 Python이나 다른 프로그래밍 언어로 코딩할 수 있는 사용자를 위해 설계되었습니다.
+일반 사용자의 경우, 이 쉬운 템플릿을 일상 업무에 사용하고 몇 번 반복하세요. 함수를 문서화하기 위해 메모 애플리케이션을 사용하고, 라이브러리로 업데이트할 수도 있습니다.
+또는 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web), [chatbox](https://github.com/Bin-Huang/chatbox), [PromptAppGPT](https://github.com/mleoking/PromptAppGPT), [ChatGPT-Desktop](https://github.com/lencx/ChatGPT)과 같은 일부 오픈소스 ChatGPT 도구를 사용할 수 있습니다. 현재 ChatGPT-Next-Web은 새 채팅을 초기화하기 전에 몇 개의 샷을 추가할 수 있습니다. 그리고 PromptAppGPT는 프롬프트 템플릿을 기반으로 한 웹 애플리케이션의 로우코드 개발을 지원하며, 몇 줄의 프롬프트로 누구나 AutoGPT와 같은 애플리케이션을 개발할 수 있게 합니다.
+이 기능을 사용하여 함수를 추가한 다음 사용할 수 있습니다.

@@ -1,4 +1,4 @@
-# Datasets
+# 데이터셋(Datasets)
 #### (이름순 정렬)
 
 - [Anthropic's Red Team dataset](https://github.com/anthropics/hh-rlhf/tree/master/red-team-attempts), [(paper)](https://arxiv.org/abs/2209.07858)
